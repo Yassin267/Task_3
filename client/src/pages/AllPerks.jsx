@@ -1,3 +1,4 @@
+// ...existing code...
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
@@ -29,6 +30,23 @@ export default function AllPerks() {
  * useEffect Hook #2: Auto-search on Input Change
 
 */
+
+  // Effect #1: initial data load on mount
+  useEffect(() => {
+    loadAllPerks()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Effect #2: auto-search (debounced) whenever searchQuery or merchantFilter changes
+  useEffect(() => {
+    // debounce so we don't call API on every keystroke
+    const timer = setTimeout(() => {
+      loadAllPerks()
+    }, 500)
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, merchantFilter])
 
   
   useEffect(() => {
@@ -136,7 +154,8 @@ export default function AllPerks() {
                 type="text"
                 className="input"
                 placeholder="Enter perk name..."
-                
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
               />
               <p className="text-xs text-zinc-500 mt-1">
                 Auto-searches as you type, or press Enter / click Search
@@ -151,7 +170,8 @@ export default function AllPerks() {
               </label>
               <select
                 className="input"
-                
+                value={merchantFilter}
+                onChange={e => setMerchantFilter(e.target.value)}
               >
                 <option value="">All Merchants</option>
                 
@@ -289,4 +309,4 @@ export default function AllPerks() {
     </div>
   )
 }
-
+// ...existing code...
